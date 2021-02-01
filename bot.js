@@ -1,20 +1,19 @@
-process.env.NTBA_FIX_319 = 1;
+var token = process.env.TOKEN;
 
-const TelegramBot = require('node-telegram-bot-api');
+var Bot = require('node-telegram-bot-api');
+var bot;
 
-// replace the value below with the Telegram token you receive from @BotFather
-const token = '1432899962:AAGqpBz9NpeTGvnzBVKSxyVg944u1Meh8vs';
+if(process.env.NODE_ENV === 'production') {
+  bot = new Bot(token);
+  bot.setWebHook(process.env.HEROKU_URL + bot.token);
+}
+else {
+  bot = new Bot(token, { polling: true });
+}
 
-// Create a bot that uses 'polling' to fetch new updates
-const bot = new TelegramBot(token, {polling: true});
+console.log('bot server started...');
 
-bot.on('message', (msg) => {
-  const chatId = msg.chat.id;
-
-  // send a message to the chat acknowledging receipt of their message
-  bot.sendMessage(chatId, 'Received your message');
-});
-
+// hello command
 bot.onText(/^\/say_hello (.+)$/, function (msg, match) {
   var name = match[1];
   bot.sendMessage(msg.chat.id, 'Hello ' + name + '!').then(function () {
@@ -22,6 +21,7 @@ bot.onText(/^\/say_hello (.+)$/, function (msg, match) {
   });
 });
 
+// sum command
 bot.onText(/^\/sum((\s+\d+)+)$/, function (msg, match) {
   var result = 0;
   match[1].trim().split(/\s+/).forEach(function (i) {
@@ -31,3 +31,5 @@ bot.onText(/^\/sum((\s+\d+)+)$/, function (msg, match) {
     // reply sent!
   });
 });
+
+module.exports = bot;
