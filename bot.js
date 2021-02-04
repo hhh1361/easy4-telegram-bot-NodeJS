@@ -1,10 +1,15 @@
+// const token = process.env.TELEGRAM_TOKEN;
+// const url = process.env.HEROKU_URL;
+// const env = process.env.NODE_ENV;
+
 const token = '1432899962:AAH9I_VoTscEZ-md2VWy0MCaZ_vEX00Hu3I';
 const url = 'https://easy4-telegram-bot.herokuapp.com/';
+const env = 'production';
 
 var Bot = require('node-telegram-bot-api');
 var bot;
 
-if(process.env.NODE_ENV === 'production') {
+if(env === 'production') {
   bot = new Bot(token);
   bot.setWebHook(url + bot.token);
 }
@@ -12,13 +17,11 @@ else {
   bot = new Bot(token, { polling: true });
 }
 
-console.log('bot server started...');
-
 bot.on('message', (msg) => {
   const chatId = msg.chat.id;
 
   // send a message to the chat acknowledging receipt of their message
-  bot.sendMessage(chatId, 'Received your message');
+  bot.sendMessage(chatId, '123');
 });
 
 // hello command
